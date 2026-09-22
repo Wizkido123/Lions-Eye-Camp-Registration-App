@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>32nd Lions Eye Camp App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lionsMaroon: '#741529',
+                        lionsGold: '#F3A800',
+                        lionsBlue: '#00267F',
+                        aravindBlue: '#1E448F'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            
+            /* Patient Card Print Layout */
+            body.print-mode-card #app-header,
+            body.print-mode-card #main-layout { display: none !important; }
+            
+            body.print-mode-card #card-modal-overlay { 
+                display: block !important;
+                position: static !important;
+                background: none !important;
+            }
+            
+            body.print-mode-card #print-card-area {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+                border: 2px solid #000;
+                border-radius: 8px;
+            }
+
+            /* Admin List Print Layout */
+            body.print-mode-admin #app-header,
+            body.print-mode-admin #registration-col,
+            body.print-mode-admin #card-modal-overlay,
+            body.print-mode-admin #custom-alert-modal,
+            body.print-mode-admin #custom-confirm-modal { display: none !important; }
+            
+            body.print-mode-admin #admin-col {
+                width: 100%;
+                max-width: 100%;
+                display: block;
+                box-shadow: none;
+                border: none;
+                height: auto;
+            }
+            body.print-mode-admin .admin-controls, 
+            body.print-mode-admin .action-col { display: none !important; }
+            body.print-mode-admin table { width: 100%; border-collapse: collapse; }
+            body.print-mode-admin th, body.print-mode-admin td { border: 1px solid #000; padding: 8px; text-align: left; }
+            body.print-mode-admin thead { display: table-header-group; }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <header id="app-header" class="bg-white shadow-md border-b-4 border-lionsBlue print:hidden">
+        <div class="max-w-[1500px] mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <!-- Left: Lions Club Logo -->
+            <div class="flex items-center space-x-3 w-full md:w-1/4 justify-center md:justify-start">
+                <img src="500 kb Lions logo.png" alt="Lions Club" class="h-16 w-16 object-contain" onerror="this.src='https://placehold.co/100x100/741529/ffffff?text=Lions'">
+                <div class="hidden lg:block text-left">
+                    <h1 class="text-sm font-bold text-lionsMaroon uppercase tracking-wider leading-tight">Lions Club</h1>
+                    <p class="text-xs text-gray-500 uppercase leading-tight">of Nilambur</p>
+                </div>
+            </div>
+
+            <!-- Center: Eye Camp Logo and Title -->
+            <div class="w-full md:w-2/4 flex flex-col items-center justify-center text-center">
+                <img src="WhatsApp Image 2026-09-21 at 18.41.21.jpeg" alt="Eye Camp Logo" class="h-16 md:h-20 object-contain mb-1" onerror="this.src='https://placehold.co/200x100/ffffff/00267F?text=Eye+Camp+Logo'">
+                <h2 class="text-lg md:text-2xl font-black uppercase text-lionsBlue tracking-tight leading-none">32nd Free Cataract Surgery Camp</h2>
+                <p class="text-sm font-bold text-gray-700 mt-1 bg-yellow-100 px-3 py-1 rounded-full inline-block">01 November 2026</p>
+            </div>
+
+            <!-- Right: Aravind Eye Hospital Logo -->
+            <div class="flex items-center space-x-3 w-full md:w-1/4 justify-center md:justify-end text-right">
+                <div class="hidden lg:block">
+                    <h1 class="text-sm font-bold text-aravindBlue uppercase tracking-wider leading-tight">Aravind</h1>
+                    <p class="text-[10px] text-gray-500 uppercase leading-tight">Eye Care System</p>
+                </div>
+                <img src="image_e66db9.png" alt="Aravind Eye Hospital" class="h-12 lg:h-14 object-contain" onerror="this.src='https://placehold.co/150x50/1E448F/ffffff?text=Aravind'">
+            </div>
+
+        </div>
+    </header>
+
+    <main id="main-layout" class="flex-grow max-w-[1500px] mx-auto px-4 py-6 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div id="registration-col" class="lg:col-span-4 xl:col-span-3 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden flex flex-col h-fit sticky top-6">
+                <div class="bg-lionsBlue px-5 py-4 border-b border-gray-300">
+                    <h3 class="text-lg font-bold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-lionsGold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        Registration Form
+                    </h3>
+                </div>
+                
+                <form id="registration-form" class="p-5 space-y-4">
+                    <div class="space-y-3">
+                        <div>
+                            <label for="name" class="block text-xs font-bold text-gray-700 uppercase mb-1">Patient Name *</label>
+                            <input type="text" id="name" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-lionsBlue focus:border-lionsBlue sm:text-sm outline-none">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="age" class="block text-xs font-bold text-gray-700 uppercase mb-1">Age *</label>
+                                <input type="number" id="age" required min="1" max="120" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-lionsBlue focus:border-lionsBlue sm:text-sm outline-none">
+                            </div>
+                            <div>
+                                <label for="gender" class="block text-xs font-bold text-gray-700 uppercase mb-1">Gender *</label>
+                                <select id="gender" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-lionsBlue focus:border-lionsBlue sm:text-sm outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="phone" class="block text-xs font-bold text-gray-700 uppercase mb-1">Phone Number *</label>
+                            <input type="tel" id="phone" required pattern="[0-9]{10}" placeholder="10 digits" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-lionsBlue focus:border-lionsBlue sm:text-sm outline-none">
+                        </div>
+
+                        <div>
+                            <label for="location" class="block text-xs font-bold text-gray-700 uppercase mb-1">Location (Ward/Panchayat) *</label>
+                            <select id="location" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-lionsBlue focus:border-lionsBlue sm:text-sm outline-none bg-white">
+                                <option value="" disabled selected>Select Location...</option>
+                                <option value="Chandakkunnu">Chandakkunnu</option>
+                                <option value="Edavanna">Edavanna</option>
+                                <option value="Nilambur Town">Nilambur Town</option>
+                                <option value="Wandoor">Wandoor</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-3 mt-4">
+                        <h4 class="text-[11px] font-black text-gray-500 uppercase tracking-wider mb-2">Medical History</h4>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between bg-gray-50 p-2.5 rounded border border-gray-200">
+                                <span class="text-sm font-medium text-gray-700">Diabetic?</span>
+                                <div class="flex space-x-3">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="diabetic" value="Yes" required class="form-radio text-lionsBlue h-4 w-4">
+                                        <span class="ml-1.5 text-sm text-gray-700">Yes</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="diabetic" value="No" class="form-radio text-lionsBlue h-4 w-4">
+                                        <span class="ml-1.5 text-sm text-gray-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between bg-gray-50 p-2.5 rounded border border-gray-200">
+                                <span class="text-sm font-medium text-gray-700">Prev. Eye Surgery?</span>
+                                <div class="flex space-x-3">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="prevSurgery" value="Yes" required class="form-radio text-lionsBlue h-4 w-4">
+                                        <span class="ml-1.5 text-sm text-gray-700">Yes</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="prevSurgery" value="No" class="form-radio text-lionsBlue h-4 w-4">
+                                        <span class="ml-1.5 text-sm text-gray-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-2.5 rounded border border-gray-200 transition-colors duration-200" id="bp-container">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">BP / Heart Condition?</span>
+                                    <div class="flex space-x-3">
+                                        <label class="inline-flex items-center cursor-pointer">
+                                            <input type="radio" name="bpHeart" id="bp-yes" value="Yes" required class="form-radio text-red-600 h-4 w-4">
+                                            <span class="ml-1.5 text-sm text-gray-700">Yes</span>
+                                        </label>
+                                        <label class="inline-flex items-center cursor-pointer">
+                                            <input type="radio" name="bpHeart" id="bp-no" value="No" class="form-radio text-lionsBlue h-4 w-4">
+                                            <span class="ml-1.5 text-sm text-gray-700">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div id="bp-warning" class="hidden mt-3 bg-red-50 border border-red-200 p-2 rounded shadow-sm">
+                                    <p class="text-xs text-red-700 font-bold leading-snug">⚠️ Attention: You must bring a doctor's clearance certificate to the camp.</p>
+                                    <div class="mt-2 bg-white p-1.5 rounded border border-red-100">
+                                        <label class="inline-flex items-start cursor-pointer w-full">
+                                            <input type="checkbox" id="bp-clearance" class="form-checkbox text-red-600 mt-0.5 h-3.5 w-3.5 rounded border-red-300">
+                                            <span class="ml-2 text-[11px] font-bold text-gray-800 leading-tight">I acknowledge and will bring the certificate.</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full mt-4 bg-lionsGold hover:bg-yellow-600 text-gray-900 font-black py-3 px-4 rounded-md shadow-md transition duration-200 uppercase tracking-widest text-sm">
+                        Register Patient
+                    </button>
+                </form>
+            </div>
+
+            <div id="admin-col" class="lg:col-span-8 xl:col-span-9 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden flex flex-col h-[800px]">
+                <div class="bg-gray-100 px-5 py-3 border-b border-gray-300 flex flex-col md:flex-row md:justify-between md:items-center gap-3 admin-controls">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-lionsBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Admin Dashboard
+                    </h3>
+                    <button onclick="printAdminList()" class="bg-lionsMaroon hover:bg-red-900 text-white font-bold py-1.5 px-4 rounded text-sm shadow flex items-center transition-colors w-full md:w-auto justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Print Data List
+                    </button>
+                </div>
+                
+                <div class="p-3 bg-gray-50 border-b border-gray-200 admin-controls z-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+                        <div class="flex items-center space-x-2 w-full md:w-auto">
+                            <label for="filter-location" class="text-xs font-bold text-gray-600 uppercase">Location:</label>
+                            <select id="filter-location" class="block w-full md:w-40 px-2 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-lionsBlue focus:border-lionsBlue text-sm bg-white outline-none">
+                                <option value="All">All Locations</option>
+                                <option value="Chandakkunnu">Chandakkunnu</option>
+                                <option value="Edavanna">Edavanna</option>
+                                <option value="Nilambur Town">Nilambur Town</option>
+                                <option value="Wandoor">Wandoor</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-2 w-full md:w-auto">
+                            <label for="filter-category" class="text-xs font-bold text-gray-600 uppercase">Category:</label>
+                            <select id="filter-category" class="block w-full md:w-48 px-2 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-lionsBlue focus:border-lionsBlue text-sm bg-white outline-none">
+                                <option value="All">All Categories</option>
+                                <option value="Children">Children (Under 18)</option>
+                                <option value="Women">Women</option>
+                                <option value="Senior">Senior Citizens (65-74)</option>
+                                <option value="SuperSenior">Super Senior (75+)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-sm font-bold text-gray-500 whitespace-nowrap">
+                        Count: <span id="total-count" class="text-lionsMaroon bg-red-50 px-2 py-0.5 rounded border border-red-100">0</span>
+                    </div>
+                </div>
+
+                <div class="flex-grow overflow-auto relative">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-white sticky top-0 shadow-sm z-0">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-[11px] font-black text-gray-500 uppercase tracking-wider">Token</th>
+                                <th class="px-4 py-3 text-left text-[11px] font-black text-gray-500 uppercase tracking-wider">Patient Name</th>
+                                <th class="px-4 py-3 text-left text-[11px] font-black text-gray-500 uppercase tracking-wider">Details</th>
+                                <th class="px-4 py-3 text-left text-[11px] font-black text-gray-500 uppercase tracking-wider">Location</th>
+                                <th class="px-4 py-3 text-center text-[11px] font-black text-gray-500 uppercase tracking-wider">Med Status</th>
+                                <th class="px-4 py-3 text-right text-[11px] font-black text-gray-500 uppercase tracking-wider action-col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="bg-white divide-y divide-gray-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+    <!-- Patient Card Modal -->
+    <div id="card-modal-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm print:static print:bg-transparent print:p-0 print:block">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden relative flex flex-col print:shadow-none print:border-none print:w-full print:max-w-none">
+            
+            <div class="bg-green-600 text-white text-center py-2 font-bold text-xs tracking-widest uppercase no-print">
+                Registration Successful
+            </div>
+
+            <div id="print-card-area" class="p-5 bg-white relative">
+                <!-- Card Header -->
+                <div class="flex justify-between items-center border-b-2 border-gray-800 pb-2 mb-4">
+                    <img src="500 kb Lions logo.png" class="w-10 h-10 object-contain grayscale" alt="Lions">
+                    <div class="text-center px-2">
+                        <h2 class="text-[13px] font-black text-gray-900 uppercase leading-tight">32nd Eye Camp</h2>
+                        <p class="text-[9px] font-bold text-gray-600">01 Nov 2026 • Nilambur</p>
+                    </div>
+                    <img src="image_e66db9.png" class="w-12 h-6 object-contain grayscale" alt="Aravind">
+                </div>
+
+                <!-- Token Number -->
+                <div class="text-center mb-4 bg-gray-50 py-2 rounded border border-dashed border-gray-400">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Token No.</p>
+                    <p id="card-token" class="text-3xl font-black text-gray-900 tracking-tighter">LNC-000</p>
+                </div>
+
+                <!-- Medical Clearance Warning Flag -->
+                <div id="card-warning-flag" class="hidden bg-black text-white text-center py-1.5 px-2 rounded mb-4 border-2 border-black">
+                    <p class="text-[12px] font-black uppercase tracking-widest">⚠️ REQUIRES MEDICAL CLEARANCE</p>
+                </div>
+
+                <!-- Patient Data -->
+                <div class="space-y-2 text-sm border-t-2 border-b-2 border-gray-100 py-3 mb-4">
+                    <div class="flex justify-between">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase">Name</span>
+                        <span class="font-bold text-gray-900 uppercase text-right" id="card-name">-</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase">Age / Gender</span>
+                        <span class="font-bold text-gray-900 text-right"><span id="card-age">-</span> / <span id="card-gender">-</span></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase">Location</span>
+                        <span class="font-bold text-gray-900 text-right" id="card-location">-</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase">Phone</span>
+                        <span class="font-bold text-gray-900 text-right" id="card-phone">-</span>
+                    </div>
+                </div>
+                
+                <!-- Mock QR -->
+                <div class="flex flex-col items-center justify-center pt-2">
+                    <div class="w-16 h-16 bg-gray-100 border-2 border-gray-800 p-1 flex items-center justify-center relative overflow-hidden">
+                         <div class="absolute inset-0 flex flex-wrap gap-[1px] p-[2px] opacity-70">
+                            <!-- CSS pure mock QR pattern -->
+                            <div class="w-[30%] h-[30%] bg-black border-2 border-white"></div>
+                            <div class="w-[30%] h-[30%] bg-transparent"></div>
+                            <div class="w-[30%] h-[30%] bg-black border-2 border-white"></div>
+                            <div class="w-[30%] h-[30%] bg-black"></div>
+                            <div class="w-[30%] h-[30%] bg-black"></div>
+                            <div class="w-[30%] h-[30%] bg-transparent"></div>
+                            <div class="w-[30%] h-[30%] bg-black border-2 border-white"></div>
+                            <div class="w-[30%] h-[30%] bg-transparent"></div>
+                            <div class="w-[30%] h-[30%] bg-black"></div>
+                        </div>
+                    </div>
+                    <p class="text-[9px] text-gray-500 font-bold mt-1 uppercase">Scan at entry</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="p-3 bg-gray-100 flex space-x-2 no-print border-t border-gray-200">
+                <button onclick="closeCardModal()" class="w-1/3 bg-white border border-gray-300 hover:bg-gray-200 text-gray-700 font-bold py-2 rounded transition-colors text-sm">
+                    Close
+                </button>
+                <button onclick="printPatientCard()" class="w-2/3 bg-lionsBlue hover:bg-blue-900 text-white font-bold py-2 rounded flex justify-center items-center shadow transition-colors text-sm">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Print Card
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="custom-alert-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-5 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-2">Required Action</h3>
+            <p class="text-sm text-gray-500 mb-4" id="alert-message">Message here</p>
+            <button onclick="closeAlert()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-lionsBlue text-base font-medium text-white hover:bg-blue-900 focus:outline-none sm:text-sm">
+                OK, I understand
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-5 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 mb-4">
+                <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-2">Delete Record?</h3>
+            <p class="text-sm text-gray-500 mb-5">Are you sure you want to permanently delete this registration? This action cannot be undone.</p>
+            <div class="flex space-x-3">
+                <button onclick="closeConfirm()" class="w-1/2 inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm">
+                    Cancel
+                </button>
+                <button onclick="executeDelete()" class="w-1/2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:text-sm">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let patients = [];
+        let itemToDelete = null;
+
+        // DOM Elements
+        const form = document.getElementById('registration-form');
+        const bpYes = document.getElementById('bp-yes');
+        const bpNo = document.getElementById('bp-no');
+        const bpWarning = document.getElementById('bp-warning');
+        const bpClearance = document.getElementById('bp-clearance');
+        const bpContainer = document.getElementById('bp-container');
+        const adminTableBody = document.getElementById('admin-table-body');
+        const filterLocation = document.getElementById('filter-location');
+        const filterCategory = document.getElementById('filter-category');
+        const totalCount = document.getElementById('total-count');
+        const cardModal = document.getElementById('card-modal-overlay');
+
+        // Storage
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('lionsCamp32_v3');
+                if (saved) patients = JSON.parse(saved);
+            } catch (e) { console.error("Storage error:", e); }
+        }
+        function saveData() {
+            localStorage.setItem('lionsCamp32_v3', JSON.stringify(patients));
+        }
+
+        // Form Logic
+        function handleBPToggle() {
+            if (bpYes.checked) {
+                bpWarning.classList.remove('hidden');
+                bpContainer.classList.add('border-red-300', 'bg-red-50');
+                bpContainer.classList.remove('border-gray-200', 'bg-gray-50');
+                bpClearance.required = true;
+            } else {
+                bpWarning.classList.add('hidden');
+                bpContainer.classList.remove('border-red-300', 'bg-red-50');
+                bpContainer.classList.add('border-gray-200', 'bg-gray-50');
+                bpClearance.required = false;
+                bpClearance.checked = false;
+            }
+        }
+        bpYes.addEventListener('change', handleBPToggle);
+        bpNo.addEventListener('change', handleBPToggle);
+
+        function showAlert(msg) {
+            document.getElementById('alert-message').textContent = msg;
+            document.getElementById('custom-alert-modal').classList.remove('hidden');
+        }
+        function closeAlert() {
+            document.getElementById('custom-alert-modal').classList.add('hidden');
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (bpYes.checked && !bpClearance.checked) {
+                showAlert("Please tick the checkbox to acknowledge that you will bring a doctor's clearance certificate.");
+                return;
+            }
+
+            // Generate Token (e.g. LNC-001)
+            const tokenStr = `LNC-${(patients.length + 1).toString().padStart(3, '0')}`;
+
+            const newPatient = {
+                id: Date.now(),
+                token: tokenStr,
+                name: document.getElementById('name').value.trim(),
+                age: parseInt(document.getElementById('age').value, 10),
+                gender: document.getElementById('gender').value,
+                phone: document.getElementById('phone').value.trim(),
+                location: document.getElementById('location').value,
+                diabetic: document.querySelector('input[name="diabetic"]:checked').value,
+                prevSurgery: document.querySelector('input[name="prevSurgery"]:checked').value,
+                bpHeart: document.querySelector('input[name="bpHeart"]:checked').value
+            };
+
+            patients.push(newPatient);
+            saveData();
+            renderAdminTable();
+            showPatientCard(newPatient);
+            
+            form.reset();
+            handleBPToggle();
+        });
+
+        function renderAdminTable() {
+            const locVal = filterLocation.value;
+            const catVal = filterCategory.value;
+            
+            let filtered = patients;
+            
+            // Location Filter
+            if (locVal !== 'All') {
+                filtered = filtered.filter(p => p.location === locVal);
+            }
+
+            // Category Filter
+            if (catVal !== 'All') {
+                filtered = filtered.filter(p => {
+                    if (catVal === 'Children') return p.age < 18;
+                    if (catVal === 'Women') return p.gender === 'Female';
+                    if (catVal === 'Senior') return p.age >= 65 && p.age <= 74;
+                    if (catVal === 'SuperSenior') return p.age >= 75;
+                    return true;
+                });
+            }
+
+            // Show newest on top
+            filtered.sort((a, b) => b.id - a.id);
+
+            totalCount.textContent = filtered.length;
+            adminTableBody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                adminTableBody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-gray-500">No records found matching filters.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-blue-50 transition-colors";
+                
+                let medTags = '';
+                if (p.diabetic === 'Yes') medTags += `<span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-1.5 py-0.5 rounded mr-1 inline-block mb-1">Diabetic</span>`;
+                if (p.prevSurgery === 'Yes') medTags += `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded mr-1 inline-block mb-1">Prev Surg</span>`;
+                if (p.bpHeart === 'Yes') medTags += `<span class="bg-red-100 text-red-800 text-[10px] font-black px-1.5 py-0.5 rounded border border-red-300 inline-block mb-1">Clearance Reqd</span>`;
+                if(medTags === '') medTags = `<span class="text-green-600 text-xs font-bold">Clear</span>`;
+
+                tr.innerHTML = `
+                    <td class="px-4 py-2 whitespace-nowrap"><span class="font-mono text-xs font-bold bg-gray-100 px-2 py-1 rounded border border-gray-300">${p.token}</span></td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm font-bold text-gray-900">${p.name}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-xs text-gray-600">${p.age}y / ${p.gender.charAt(0)} <br/> ${p.phone}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-800">${p.location}</td>
+                    <td class="px-4 py-2 text-center align-middle">${medTags}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-right action-col">
+                        <button onclick="requestDelete(${p.id})" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2 py-1 rounded text-xs font-bold transition-colors">Delete</button>
+                    </td>
+                `;
+                adminTableBody.appendChild(tr);
+            });
+        }
+        
+        filterLocation.addEventListener('change', renderAdminTable);
+        filterCategory.addEventListener('change', renderAdminTable);
+
+        // Delete Logic
+        function requestDelete(id) {
+            itemToDelete = id;
+            document.getElementById('custom-confirm-modal').classList.remove('hidden');
+        }
+        function closeConfirm() {
+            itemToDelete = null;
+            document.getElementById('custom-confirm-modal').classList.add('hidden');
+        }
+        function executeDelete() {
+            if (itemToDelete !== null) {
+                patients = patients.filter(p => p.id !== itemToDelete);
+                saveData();
+                renderAdminTable();
+            }
+            closeConfirm();
+        }
+
+        // Print Card Modal Handling
+        function showPatientCard(patient) {
+            document.getElementById('card-token').textContent = patient.token;
+            document.getElementById('card-name').textContent = patient.name;
+            document.getElementById('card-age').textContent = patient.age;
+            document.getElementById('card-gender').textContent = patient.gender.charAt(0);
+            document.getElementById('card-phone').textContent = patient.phone;
+            document.getElementById('card-location').textContent = patient.location;
+            
+            const warningFlag = document.getElementById('card-warning-flag');
+            if (patient.bpHeart === 'Yes') {
+                warningFlag.classList.remove('hidden');
+                warningFlag.classList.add('block');
+            } else {
+                warningFlag.classList.add('hidden');
+                warningFlag.classList.remove('block');
+            }
+            cardModal.classList.remove('hidden');
+        }
+        function closeCardModal() { cardModal.classList.add('hidden'); }
+
+        // Isolated Printing
+        function printPatientCard() {
+            document.body.classList.add('print-mode-card');
+            window.print();
+            setTimeout(() => document.body.classList.remove('print-mode-card'), 500);
+        }
+
+        function printAdminList() {
+            const originalTitle = document.title;
+            const loc = filterLocation.value;
+            const cat = filterCategory.value;
+            document.title = `EyeCamp_Data_${loc}_${cat}`;
+            
+            document.body.classList.add('print-mode-admin');
+            window.print();
+            
+            setTimeout(() => { 
+                document.body.classList.remove('print-mode-admin');
+                document.title = originalTitle;
+            }, 500);
+        }
+
+        // Init
+        window.onload = () => {
+            loadData();
+            renderAdminTable();
+        };
+    </script>
+</body>
+</html>
